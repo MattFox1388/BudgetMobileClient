@@ -1,8 +1,17 @@
 import React from 'react';
 import {Text, View} from 'react-native';
+import { Header } from 'react-native-elements';
+import HamburgerIcon from './src/components/svgs/hamburger';
 
-const App = () => {
+
+const App:React.FC = () => {
   return (
+  <>
+   <Header
+    leftComponent={<HamburgerIcon/>}
+    centerComponent={{ text: 'MY TITLE', style: { color: '#fff' } }}
+    rightComponent={{ icon: 'home', color: '#fff' }}
+  />
     <View
       style={{
         flex: 1,
@@ -11,6 +20,7 @@ const App = () => {
       }}>
       <Text>Hello, world!</Text>
     </View>
+  </>
   );
 };
 export default App;
