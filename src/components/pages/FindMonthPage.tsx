@@ -7,17 +7,17 @@ import {MonthStatResponse} from '../../../types/MonthStatResponse';
 
 export const FindMonthPage: React.FC = () => {
   const [monthStatData, setMonthStatData] = useState<MonthStatResponse[]>([]);
+  const [selectListData, setSelectListData] = useState<{key: number; value: string}[]>([]);
   const [selected, setSelected] = React.useState([]);
-  let selectListData: {key: number; value: string}[] = [];
 
   const getMonthStat = () => {
     fetchWithRetries(BUDGET_API_URL + '/get_month_stats', {}, 1).then(
       (data: MonthStatResponse[]) => {
         console.log(data);
         setMonthStatData(data);
-        selectListData = data.map((row, index) => {
+        setSelectListData(data.map((row, index) => {
           return {key: index, value: row.date_val + row.year_num};
-        });
+        }));
       },
     );
   };
