@@ -1,11 +1,19 @@
 import React, {useEffect, useState} from 'react';
-import {Text, View, ActivityIndicator, StyleSheet, ScrollView} from 'react-native';
+import {
+  Text,
+  View,
+  ActivityIndicator,
+  StyleSheet,
+  ScrollView,
+} from 'react-native';
 import {SelectList} from 'react-native-dropdown-select-list';
 import {BUDGET_API_URL} from '@env';
 import {fetchWithRetries} from '../../shared/FetchUtility';
 import {MonthStatResponse} from '../../../types/MonthStatResponse';
 import {VictoryPie} from 'victory-native';
-import { MonthStats } from './MonthStats';
+import {MonthStats} from './MonthStats';
+import axios from 'axios';
+import EncryptedStorage from 'react-native-encrypted-storage';
 
 export const FindMonthPage: React.FC = () => {
   const [monthStatData, setMonthStatData] = useState<MonthStatResponse[]>([]);
@@ -14,20 +22,24 @@ export const FindMonthPage: React.FC = () => {
   >([]);
   const [selected, setSelected] = React.useState<number | null>(null);
 
-  // const graphicColor =  ['red', 'blue', 'cyan', 'green', 'gold'];
-
-  const getMonthStat = () => {
-    fetchWithRetries(BUDGET_API_URL + '/get_month_stats', {}, 1).then(
-      (data: MonthStatResponse[]) => {
-        console.log(data);
+  const getMonthStat = async () => {
+    console.log('hit the method');
+    const token = await EncryptedStorage.getItem('login_token');
+    axios
+      .get(BUDGET_API_URL + '/get_month_stats', {params: {token: token}})
+      .then(response => {
+        const data: MonthStatResponse[] = response.data;
+        console.log('data: ' + data);
         setMonthStatData(data);
         setSelectListData(
           data.map((row, index) => {
             return {key: index, value: row.month_id + '/' + row.year_num};
           }),
         );
-      },
-    );
+      })
+      .catch(error => {
+        console.log('error: ' + error.response.data.error);
+      });
   };
 
   useEffect(() => {
@@ -59,7 +71,7 @@ export const FindMonthPage: React.FC = () => {
               Month: {monthStatData[selected].month_id.toString()} Year:{' '}
               {monthStatData[selected].year_num.toString()}
             </Text>
-            <MonthStats selectedMonthStats={monthStatData[selected]}/> 
+            <MonthStats selectedMonthStats={monthStatData[selected]} />
           </View>
         ) : null}
       </View>
