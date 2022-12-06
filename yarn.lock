@@ -1475,6 +1475,13 @@
   resolved "https://registry.yarnpkg.com/@trysound/sax/-/sax-0.2.0.tgz#cccaab758af56761eb7bf37af6f03f326dd798ad"
   integrity sha512-L7z9BgrNEcYyUYtF+HaEfiS5ebkh9jXqbszz7pC0hRBPaatV0XjSD3+eHrpqFemQfgwiFF0QPIarnIihIDn7OA==
 
+"@types/axios@^0.14.0":
+  version "0.14.0"
+  resolved "https://registry.yarnpkg.com/@types/axios/-/axios-0.14.0.tgz#ec2300fbe7d7dddd7eb9d3abf87999964cafce46"
+  integrity sha512-KqQnQbdYE54D7oa/UmYVMZKq7CO4l8DEENzOKc4aBRwxCXSlJXGz83flFx5L7AWrOQnmuN3kVsRdt+GZPPjiVQ==
+  dependencies:
+    axios "*"
+
 "@types/babel__core@^7.0.0", "@types/babel__core@^7.1.7":
   version "7.1.19"
   resolved "https://registry.yarnpkg.com/@types/babel__core/-/babel__core-7.1.19.tgz#7b497495b7d1b4812bdb9d02804d0576f43ee460"
@@ -1690,9 +1697,9 @@
     "@types/react" "*"
 
 "@types/react@*", "@types/react@18.2.0":
-  version "18.0.25"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.0.25.tgz#8b1dcd7e56fe7315535a4af25435e0bb55c8ae44"
-  integrity sha512-xD6c0KDT4m7n9uD4ZHi02lzskaiqcBxf4zi+tXZY98a04wvc0hi/TcCPC2FOESZi51Nd7tlUeOJY8RofL799/g==
+  version "18.0.26"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.0.26.tgz#8ad59fc01fef8eaf5c74f4ea392621749f0b7917"
+  integrity sha512-hCR3PJQsAIXyxhTNSiDFY//LhnMZWpNNr5etoCqx/iUfGc5gXWtQR2Phl908jVR6uPXacojQWTg4qRpkxTuGug==
   dependencies:
     "@types/prop-types" "*"
     "@types/scheduler" "*"
@@ -2121,7 +2128,7 @@ atob@^2.1.2:
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
 
-axios@^1.2.0:
+axios@*, axios@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/axios/-/axios-1.2.0.tgz#1cb65bd75162c70e9f8d118a905126c4a201d383"
   integrity sha512-zT7wZyNYu3N5Bu0wuZ6QccIf93Qk1eV8LOewxgjOZFd2DenOs98cJ7+Y6703d0wkaXGY6/nZd4EweJaHz9uzQw==
@@ -6894,6 +6901,13 @@ react-native-codegen@^0.0.17:
     jscodeshift "^0.13.1"
     nullthrows "^1.1.1"
 
+react-native-document-picker@^8.1.3:
+  version "8.1.3"
+  resolved "https://registry.yarnpkg.com/react-native-document-picker/-/react-native-document-picker-8.1.3.tgz#200b47c182d2d654747b5e41b5843fd378ac9d2e"
+  integrity sha512-lC+SZnzqIEE30x2CSHeZT+f7FzhQOTJprCNMRPpFVl4mLV9dDCJ/wZAmMByJFT79oQMPrzjlhhJlmjm+sVRUWQ==
+  dependencies:
+    invariant "^2.2.4"
+
 react-native-dotenv@^3.4.2:
   version "3.4.2"
   resolved "https://registry.yarnpkg.com/react-native-dotenv/-/react-native-dotenv-3.4.2.tgz#75b61ee8691af5e0897a4db21f4145080fca7da3"
@@ -6901,10 +6915,10 @@ react-native-dotenv@^3.4.2:
   dependencies:
     dotenv "^16.0.3"
 
-react-native-dropdown-select-list@^2.0.2:
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/react-native-dropdown-select-list/-/react-native-dropdown-select-list-2.0.2.tgz#12fc6810de3ea05f065ecf418ec2638d64a04ef4"
-  integrity sha512-dxbhsO6DHxN5Ex5koVIAWO5E9R6ENNzbVjSoBVi8dcQkd1ubD31eCmdJXd4+VzEpXZ2em61kzILqyksRkLtS5w==
+react-native-dropdown-select-list@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/react-native-dropdown-select-list/-/react-native-dropdown-select-list-2.0.4.tgz#bd63d684dd9b840d50e022985f9d0fa69eee1c2a"
+  integrity sha512-H7aRhhSHYvl5v+Ufy5CtXhaRHgrRQakWn+IexSFCP/+nUFu5yvwfmtbVEfIszMjr6szPuiabG15trrbswHlmCw==
 
 react-native-elements@^3.4.2:
   version "3.4.2"
@@ -6934,6 +6948,11 @@ react-native-iphone-x-helper@^1.3.1:
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/react-native-iphone-x-helper/-/react-native-iphone-x-helper-1.3.1.tgz#20c603e9a0e765fd6f97396638bdeb0e5a60b010"
   integrity sha512-HOf0jzRnq2/aFUcdCJ9w9JGzN3gdEg0zFE4FyYlp4jtidqU03D5X7ZegGKfT1EWteR0gPBGp9ye5T5FvSWi9Yg==
+
+react-native-loading-spinner-overlay@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-loading-spinner-overlay/-/react-native-loading-spinner-overlay-3.0.1.tgz#092481b8cce157d3af5ef942f845ad981f96bd36"
+  integrity sha512-4GdR54HQnKg2HPSSisVizfTLuyhSh4splY9eb8mKiYF1Ihjn/5EmdNo5bN3S7uKPFRC3WLzIZIouX6G6fXfnjw==
 
 react-native-material-buttons-no-proptypes@^0.6.0:
   version "0.6.2"

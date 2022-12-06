@@ -51,6 +51,8 @@ export const FindMonthPage: React.FC = () => {
       <View style={styles.headerContainer}>
         <Text style={styles.headerLabel}>Select Month: </Text>
         {monthStatData ? (
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          //@ts-ignore
           <SelectList
             data={selectListData}
             save="key"
@@ -59,6 +61,8 @@ export const FindMonthPage: React.FC = () => {
               setSelected(val)
             }
             defaultOption={{key: null, value: null}}
+            dropdownTextStyles={styles.inputStyles}
+            inputStyles={styles.inputStyles}
           />
         ) : (
           <ActivityIndicator size="large" />
@@ -95,6 +99,7 @@ const styles = StyleSheet.create({
   headerLabel: {
     alignSelf: 'center',
     marginRight: 5,
+    color: 'black',
   },
   monthContainer: {
     flex: 8,
@@ -103,5 +108,8 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
     marginLeft: 10,
+  },
+  inputStyles: {
+    color: 'black',
   },
 });

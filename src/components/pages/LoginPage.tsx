@@ -1,16 +1,24 @@
 import {BUDGET_API_URL} from '@env';
 import axios from 'axios';
-import React from 'react';
+import React, {useState} from 'react';
 import {Alert, Button, StyleSheet, Text, TextInput, View} from 'react-native';
 import * as qs from 'querystringify';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import * as RootNavigation from '../../navigation/RootNavigation';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 export const LoginPage: React.FC = () => {
   const [username, setUsername] = React.useState('');
   const [password, setPassword] = React.useState('');
+  const [bufferScreen, setBufferScreen] = useState(false);
+
+  const showError = (error: string) => {
+    Alert.alert('Login Error', error);
+  };
 
   const backendLogin = () => {
+    console.log('login started...');
+    setBufferScreen(true);
     axios
       .post(
         BUDGET_API_URL + '/login',
@@ -22,6 +30,7 @@ export const LoginPage: React.FC = () => {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
           },
+          timeout: 2000
         },
       )
       .then(async response => {
@@ -29,16 +38,34 @@ export const LoginPage: React.FC = () => {
         //store token
         try {
           await EncryptedStorage.setItem('login_token', response.data.token);
+          RootNavigation.navigate('HomePage', {});
         } catch (error) {
-          console.error(error);
+          const {message} = error as Error;
+          console.error('err:' + error);
+          setBufferScreen(false);
+          showError(message);
         }
-        // navigate to home
-        RootNavigation.navigate("HomePage", {});
+      })
+      .catch(error => {
+        if (error.response) {
+          const errorJson = JSON.stringify(error.response.data);
+          console.log('err1: ' + errorJson);
+          showError(errorJson);
+        } else if (error.request) {
+          const requestJSON = JSON.stringify(error.request);
+          console.log('err2: ' + requestJSON);
+          showError(requestJSON);
+        } else {
+          const messageJson = JSON.stringify(error.message);
+          console.log('err3: ' + messageJson);
+        }
+        setBufferScreen(false);
       });
   };
 
   return (
     <View style={{flex: 1}}>
+      <Spinner textContent={'Loading...'} visible={bufferScreen} />
       <View style={styles.rowContainer}>
         <Text style={styles.text}>Username:</Text>
         <TextInput
