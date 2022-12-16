@@ -2,26 +2,36 @@ import React, { useCallback, useState } from 'react';
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import DocumentPicker, {DocumentPickerResponse, types}  from 'react-native-document-picker';
 import * as RNFS from 'react-native-fs';
+import { ActivityIndicator } from 'react-native-paper';
+import { csvJSON } from '../../shared/CsvToJsonUtility';
 
 export const HomePage: React.FC = () => {
+  const [showSpinner, setShowSpinner] = useState(false);
   const onIngestEduCheckingPress = useCallback(async () => {
     try {
       const response = await DocumentPicker.pick({
         presentationStyle: 'fullScreen',
         type: [types.csv] 
       });
-      console.log('Selected file: ', response.pop()?.uri);
-      readFile(response.pop()?.uri);
+      const path = response.pop()?.uri;
+      console.log('Selected file: ', path);
+      readFile(path);
     } catch (err) {
       console.warn(err);
     }
   }, []);
 
   const readFile = async (path: string | undefined) => {
-    if (path === undefined) return;
+    if (typeof path === 'undefined') {
+      console.log(`wrong path, path: ${path}`);
+      return;
+    }
+    setShowSpinner(true);
     const response = await RNFS.readFile(path);
     console.log('Read file: ', response);
-    console.log('response type', typeof(response));
+    const jsonifiedResponse = csvJSON(response);
+    console.log(`Jsonified string response: ${jsonifiedResponse}`);
+    setShowSpinner(false);
   };
 
   const onIngestEduSavingPress = () => {
@@ -58,7 +68,9 @@ export const HomePage: React.FC = () => {
           </TouchableOpacity>
         </View>
       </View>
-      <View style={{flex: 6}}></View>
+      <View style={{flex: 6}}>
+        {showSpinner && <ActivityIndicator size="large" />}
+      </View>
     </View>
   );
 };
