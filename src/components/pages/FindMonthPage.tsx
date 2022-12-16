@@ -8,9 +8,7 @@ import {
 } from 'react-native';
 import {SelectList} from 'react-native-dropdown-select-list';
 import {BUDGET_API_URL} from '@env';
-import {fetchWithRetries} from '../../shared/FetchUtility';
 import {MonthStatResponse} from '../../../types/MonthStatResponse';
-import {VictoryPie} from 'victory-native';
 import {MonthStats} from './MonthStats';
 import axios from 'axios';
 import EncryptedStorage from 'react-native-encrypted-storage';
@@ -86,7 +84,6 @@ export const FindMonthPage: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // alignItems: 'center',
   },
   headerContainer: {
     flex: 1,
