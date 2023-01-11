@@ -21,7 +21,6 @@ export const FindMonthPage: React.FC = () => {
   const [selected, setSelected] = React.useState<number | null>(null);
 
   const getMonthStat = async () => {
-    console.log('hit the method');
     const token = await EncryptedStorage.getItem('login_token');
     axios
       .get(BUDGET_API_URL + '/get_month_stats', {params: {token: token}})

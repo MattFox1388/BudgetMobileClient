@@ -1,6 +1,6 @@
 # BudgetMobileClient
 TODO:
-
+- make sure everything is correct in db
 
 -- setup connection with backend
 -- create ytd stats page

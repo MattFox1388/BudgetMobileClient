@@ -1,9 +1,14 @@
+import axios from 'axios';
 import React, { useCallback, useState } from 'react';
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import DocumentPicker, {DocumentPickerResponse, types}  from 'react-native-document-picker';
+import EncryptedStorage from 'react-native-encrypted-storage';
 import * as RNFS from 'react-native-fs';
 import { ActivityIndicator } from 'react-native-paper';
-import { csvJSON } from '../../shared/CsvToJsonUtility';
+import { csvJSON, filterDiscResults, filterEduResults } from '../../shared/CsvToJsonUtility';
+import {BUDGET_API_URL} from '@env';
+import Toast from 'react-native-toast-message';
+
 
 export const HomePage: React.FC = () => {
   const [showSpinner, setShowSpinner] = useState(false);
@@ -14,33 +19,97 @@ export const HomePage: React.FC = () => {
         type: [types.csv] 
       });
       const path = response.pop()?.uri;
-      console.log('Selected file: ', path);
-      readFile(path);
-    } catch (err) {
+      setShowSpinner(true);
+      const json = readFile(path, false);
+      const token = await EncryptedStorage.getItem('login_token');
+      const amountProcessed = await axios.post(BUDGET_API_URL + `/ingest_edu_checking?token=${token}`, json); 
+      console.log(`amountProcessed: ${JSON.stringify(amountProcessed.data)}`);
+      Toast.show({
+        type: 'success',  
+        text1: 'Success',
+        text2: `Ingested ${amountProcessed.data["amount_processed"]} records`,
+      });
+      setShowSpinner(false);
+    } catch (err: any) {
+      if (err.response) {
+        console.log(err.response.data);
+        console.log(err.response.status);
+        console.log(err.response.headers);
+      }
       console.warn(err);
     }
   }, []);
 
-  const readFile = async (path: string | undefined) => {
+  const readFile = async (path: string | undefined, isDiscover: boolean): Promise<{}[] | null>=> {
     if (typeof path === 'undefined') {
       console.log(`wrong path, path: ${path}`);
-      return;
+      return null;
     }
-    setShowSpinner(true);
     const response = await RNFS.readFile(path);
-    console.log('Read file: ', response);
-    const jsonifiedResponse = csvJSON(response);
-    console.log(`Jsonified string response: ${jsonifiedResponse}`);
-    setShowSpinner(false);
+    let jsonifiedResponse = csvJSON(response);
+    if (!isDiscover) {
+      jsonifiedResponse = filterEduResults(jsonifiedResponse);
+    } else {
+      jsonifiedResponse = filterDiscResults(jsonifiedResponse);
+    }
+    return jsonifiedResponse;
   };
 
-  const onIngestEduSavingPress = () => {
-    return;
-  };
+  const onIngestEduSavingPress = useCallback(async () => {
+    try {
+      const response = await DocumentPicker.pick({
+        presentationStyle: 'fullScreen',
+        type: [types.csv] 
+      });
+      const path = response.pop()?.uri;
+      setShowSpinner(true);
+      const json = readFile(path, false);
+      const token = await EncryptedStorage.getItem('login_token');
+      const amountProcessed = await axios.post(BUDGET_API_URL + `/ingest_edu_saving?token=${token}`, json); 
+      console.log(`amountProcessed: ${JSON.stringify(amountProcessed.data)}`);
+      Toast.show({
+        type: 'success',  
+        text1: 'Success',
+        text2: `Ingested ${amountProcessed.data["amount_processed"]} records`,
+      });
+      setShowSpinner(false);
+    } catch (err: any) {
+      if (err.response) {
+        console.log(err.response.data);
+        console.log(err.response.status);
+        console.log(err.response.headers);
+      }
+      console.warn(err);
+    }
+  }, []);    
 
-  const onIngestDiscPress = () => {
-    return;
-  };
+  const onIngestDiscPress = useCallback(async () => {
+    try {
+      const response = await DocumentPicker.pick({
+        presentationStyle: 'fullScreen',
+        type: [types.csv] 
+      });
+      const path = response.pop()?.uri;
+      setShowSpinner(true);
+      const json = readFile(path, true);
+      const token = await EncryptedStorage.getItem('login_token');
+      const amountProcessed = await axios.post(BUDGET_API_URL + `/ingest_disc?token=${token}`, json); 
+      console.log(`amountProcessed: ${JSON.stringify(amountProcessed.data)}`);
+      Toast.show({
+        type: 'success',  
+        text1: 'Success',
+        text2: `Ingested ${amountProcessed.data["amount_processed"]} records`,
+      });
+      setShowSpinner(false);
+    } catch (err: any) {
+      if (err.response) {
+        console.log(err.response.data);
+        console.log(err.response.status);
+        console.log(err.response.headers);
+      }
+      console.warn(err);
+    }
+  }, []); 
 
 
   return (
