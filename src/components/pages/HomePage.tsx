@@ -22,7 +22,8 @@ export const HomePage: React.FC = () => {
       setShowSpinner(true);
       const json = readFile(path, false);
       const token = await EncryptedStorage.getItem('login_token');
-      const amountProcessed = await axios.post(BUDGET_API_URL + `/ingest_edu_checking?token=${token}`, json); 
+      // axios post with timeout
+      const amountProcessed = await axios.post(BUDGET_API_URL + `/ingest_edu_checking?token=${token}`, json, {timeout: 10000}); 
       console.log(`amountProcessed: ${JSON.stringify(amountProcessed.data)}`);
       Toast.show({
         type: 'success',  
@@ -65,7 +66,7 @@ export const HomePage: React.FC = () => {
       setShowSpinner(true);
       const json = readFile(path, false);
       const token = await EncryptedStorage.getItem('login_token');
-      const amountProcessed = await axios.post(BUDGET_API_URL + `/ingest_edu_saving?token=${token}`, json); 
+      const amountProcessed = await axios.post(BUDGET_API_URL + `/ingest_edu_saving?token=${token}`, json, {timeout: 10000}); 
       console.log(`amountProcessed: ${JSON.stringify(amountProcessed.data)}`);
       Toast.show({
         type: 'success',  
@@ -93,7 +94,7 @@ export const HomePage: React.FC = () => {
       setShowSpinner(true);
       const json = readFile(path, true);
       const token = await EncryptedStorage.getItem('login_token');
-      const amountProcessed = await axios.post(BUDGET_API_URL + `/ingest_disc?token=${token}`, json); 
+      const amountProcessed = await axios.post(BUDGET_API_URL + `/ingest_disc?token=${token}`, json, {timeout: 10000}); 
       console.log(`amountProcessed: ${JSON.stringify(amountProcessed.data)}`);
       Toast.show({
         type: 'success',  

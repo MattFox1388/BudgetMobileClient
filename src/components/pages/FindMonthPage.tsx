@@ -10,8 +10,9 @@ import {SelectList} from 'react-native-dropdown-select-list';
 import {BUDGET_API_URL} from '@env';
 import {MonthStatResponse} from '../../../types/MonthStatResponse';
 import {MonthStats} from './MonthStats';
-import axios from 'axios';
+import axios, {Axios} from 'axios';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import {AxiosError} from 'axios';
 
 export const FindMonthPage: React.FC = () => {
   const [monthStatData, setMonthStatData] = useState<MonthStatResponse[]>([]);
@@ -20,11 +21,14 @@ export const FindMonthPage: React.FC = () => {
   >([]);
   const [selected, setSelected] = React.useState<number | null>(null);
 
-  const getMonthStat = async () => {
-    const token = await EncryptedStorage.getItem('login_token');
-    axios
-      .get(BUDGET_API_URL + '/get_month_stats', {params: {token: token}})
-      .then(response => {
+  useEffect(() => {
+    const getMonthStat = async () => {
+      const token = await EncryptedStorage.getItem('login_token');
+
+      try {
+        const response = await axios.get(BUDGET_API_URL + '/get_month_stats', {
+          params: {token: token},
+        });
         const data: MonthStatResponse[] = response.data;
         console.log('data: ' + data);
         setMonthStatData(data);
@@ -33,14 +37,13 @@ export const FindMonthPage: React.FC = () => {
             return {key: index, value: row.month_id + '/' + row.year_num};
           }),
         );
-      })
-      .catch(error => {
-        console.log('error: ' + error.response.data.error);
-      });
-  };
+      } catch (error: any) {
+        const errorObject = JSON.parse(JSON.stringify(error));
+        console.log(errorObject);
+      }
+    };
 
-  useEffect(() => {
-    getMonthStat();
+    getMonthStat().catch(console.error);
   }, []);
 
   return (
