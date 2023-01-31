@@ -13,6 +13,7 @@ import {MonthStats} from './MonthStats';
 import axios, {Axios} from 'axios';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {AxiosError} from 'axios';
+import Toast from 'react-native-toast-message';
 
 export const FindMonthPage: React.FC = () => {
   const [monthStatData, setMonthStatData] = useState<MonthStatResponse[]>([]);
@@ -20,14 +21,19 @@ export const FindMonthPage: React.FC = () => {
     {key: number; value: string}[]
   >([]);
   const [selected, setSelected] = React.useState<number | null>(null);
+  const [showSpinner, setShowSpinner] = useState(false);
 
   useEffect(() => {
     const getMonthStat = async () => {
+      console.log('getMonthStat() called');
       const token = await EncryptedStorage.getItem('login_token');
 
       try {
+        //axios get request with timeout
+        setShowSpinner(true);
         const response = await axios.get(BUDGET_API_URL + '/get_month_stats', {
           params: {token: token},
+          timeout: 8000,
         });
         const data: MonthStatResponse[] = response.data;
         console.log('data: ' + data);
@@ -38,9 +44,17 @@ export const FindMonthPage: React.FC = () => {
           }),
         );
       } catch (error: any) {
-        const errorObject = JSON.parse(JSON.stringify(error));
-        console.log(errorObject);
+        if (axios.isAxiosError(error)) {
+          const axiosError = error as AxiosError;
+          console.log('axios error: ' + axiosError);
+          Toast.show({
+            type: 'error',
+            text1: 'Error',
+            text2: "Are you sure you're logged in?"
+          });
+        }
       }
+      setShowSpinner(false);
     };
 
     getMonthStat().catch(console.error);
@@ -79,6 +93,9 @@ export const FindMonthPage: React.FC = () => {
           </View>
         ) : null}
       </View>
+      <View style={{flex: 6}}>
+        {showSpinner && <ActivityIndicator size="large" />}
+      </View>
     </ScrollView>
   );
 };
@@ -107,6 +124,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: 'bold',
     marginLeft: 10,
+    color: 'black',
   },
   inputStyles: {
     color: 'black',

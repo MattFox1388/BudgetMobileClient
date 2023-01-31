@@ -1,14 +1,13 @@
 import axios from 'axios';
 import React, { useCallback, useState } from 'react';
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
-import DocumentPicker, {DocumentPickerResponse, types}  from 'react-native-document-picker';
+import DocumentPicker, {types}  from 'react-native-document-picker';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import * as RNFS from 'react-native-fs';
 import { ActivityIndicator } from 'react-native-paper';
 import { csvJSON, filterDiscResults, filterEduResults } from '../../shared/CsvToJsonUtility';
 import {BUDGET_API_URL} from '@env';
 import Toast from 'react-native-toast-message';
-
 
 export const HomePage: React.FC = () => {
   const [showSpinner, setShowSpinner] = useState(false);
@@ -22,7 +21,6 @@ export const HomePage: React.FC = () => {
       setShowSpinner(true);
       const json = readFile(path, false);
       const token = await EncryptedStorage.getItem('login_token');
-      // axios post with timeout
       const amountProcessed = await axios.post(BUDGET_API_URL + `/ingest_edu_checking?token=${token}`, json, {timeout: 10000}); 
       console.log(`amountProcessed: ${JSON.stringify(amountProcessed.data)}`);
       Toast.show({
