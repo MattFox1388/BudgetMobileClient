@@ -3,16 +3,17 @@ import axios, {AxiosError} from 'axios';
 import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
+import { convertToTableFormat, convertToUncategorizedItem, UncategorizedItem } from '../../shared/UncategorizedItem';
+import { Table, Row, Rows } from 'react-native-table-component';
 
-interface UncategorizedItem {
-  id: number;
-  month_id: number;
-  month_description: string;
-  is_want_or_expense: boolean;
-  is_need_want_saving: boolean;
-  is_should_be_ignored: boolean;
-  is_expense_or_ignore: boolean;
-}
+
+const tableColumns = [
+  'id',
+  'month_id',
+  'date',
+  'description',
+  'options'
+];
 
 export const UncategorizedItemsPage: React.FC = () => {
   const [uncategorizedItems, setUncategorizedItems] = React.useState<
@@ -21,7 +22,7 @@ export const UncategorizedItemsPage: React.FC = () => {
   const [showSpinner, setShowSpinner] = useState(false);
 
   useEffect(() => {
-    const setUncategorizedItems = async () => {
+    const setUncategorizedItemsFn = async () => {
       const token = await EncryptedStorage.getItem('login_token');
       // get uncategorized items
       setShowSpinner(true);
@@ -34,47 +35,38 @@ export const UncategorizedItemsPage: React.FC = () => {
           },
         );
 
-        console.log('response data: ' + response.data);
-        const uncategorizedItems: UncategorizedItem[] = response.data.map(
+        const uncategorizedItems: UncategorizedItem[] = response.data['month_records'].map(
           (row: any) => {
-            console.log(row);
-            const uncategorizedItem = row['uncategorizedItems'][0];
-            // return {
-            //   month_id: uncategorizedItem['id'],
-            //   // month_id: uncategorizedItem['month_record_id'],
-            //   month_description: row['descr'],
-            //   // is_want_or_expense: uncategorizedItem['is_want_or_expense'],
-            //   // is_need_want_saving: uncategorizedItem['is_need_want_saving'],
-            //   // is_should_be_ignored: uncategorizedItem['is_should_be_ignored'],
-            //   // is_expense_or_ignore: uncategorizedItem['is_expense_or_ignore'],
-            // }
+           return convertToUncategorizedItem(row);
           },
         );
-        for (const uncatItem of uncategorizedItems) {
-          console.log(uncatItem);
-        }
-        // get month records
-        // set uncategorized items objects
+        setUncategorizedItems(uncategorizedItems);
       } catch (error: any) {
         if (axios.isAxiosError(error)) {
           const axiosError = error as AxiosError;
           console.log('axios error: ' + axiosError);
         }
       }
-
       setShowSpinner(false);
     };
-    setUncategorizedItems();
+    setUncategorizedItemsFn();
   }, []);
 
   return (
     <View style={styles.container}>
       <Text style={styles.labelText}>Uncategorized Items</Text>
       <View style={styles.uncatItemsContainer}>
-        {uncategorizedItems !== undefined &&
+        {uncategorizedItems !== undefined ? (
           uncategorizedItems.length === 0 && (
-            <Text style={styles.dataText}>No uncategorized items</Text>
-          )}
+            <Text style={styles.dataText}>No Uncategorized Items</Text>
+          )
+        ) : (
+          <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
+            <Row data={tableColumns} style={styles.head} textStyle={styles.text}/>
+            <Rows data={convertToTableFormat(uncategorizedItems)} textStyle={styles.text}/>
+          </Table>
+        )
+} 
       </View>
 
       <View style={{flex: 6}}>
@@ -108,5 +100,7 @@ const styles = StyleSheet.create({
   uncatItemsContainer: {
     flex: 10,
     flexDirection: 'row',
-  }
+  },
+  head: { height: 40, backgroundColor: '#f1f8ff' },
+  text: { margin: 6 }
 });
