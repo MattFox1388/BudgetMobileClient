@@ -1,15 +1,15 @@
 import {BUDGET_API_URL} from '@env';
 import axios, {AxiosError} from 'axios';
 import React, {useEffect, useState} from 'react';
-import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
+import {ActivityIndicator, ScrollView, StyleSheet, Text, View} from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import { convertToTableFormat, convertToUncategorizedItem, UncategorizedItem } from '../../shared/UncategorizedItem';
-import { Table, Row, Rows } from 'react-native-table-component';
+import { Table, Row, Rows, Cell, TableWrapper } from 'react-native-table-component';
+import * as _ from 'underscore'
+import { CheckBox } from 'react-native-elements';
 
 
 const tableColumns = [
-  'id',
-  'month_id',
   'date',
   'description',
   'options'
@@ -17,7 +17,7 @@ const tableColumns = [
 
 export const UncategorizedItemsPage: React.FC = () => {
   const [uncategorizedItems, setUncategorizedItems] = React.useState<
-    UncategorizedItem[]
+  Array<Array<String>>
   >([]);
   const [showSpinner, setShowSpinner] = useState(false);
 
@@ -40,7 +40,7 @@ export const UncategorizedItemsPage: React.FC = () => {
            return convertToUncategorizedItem(row);
           },
         );
-        setUncategorizedItems(uncategorizedItems);
+        setUncategorizedItems(convertToTableFormat(uncategorizedItems));
       } catch (error: any) {
         if (axios.isAxiosError(error)) {
           const axiosError = error as AxiosError;
@@ -55,22 +55,31 @@ export const UncategorizedItemsPage: React.FC = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.labelText}>Uncategorized Items</Text>
+      <View style={{flex: 1}}>
+        {showSpinner && <ActivityIndicator size="large" />}
+      </View>
       <View style={styles.uncatItemsContainer}>
-        {uncategorizedItems !== undefined ? (
-          uncategorizedItems.length === 0 && (
+        {(uncategorizedItems.length === 0) ? (
             <Text style={styles.dataText}>No Uncategorized Items</Text>
-          )
         ) : (
-          <Table borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
-            <Row data={tableColumns} style={styles.head} textStyle={styles.text}/>
-            <Rows data={convertToTableFormat(uncategorizedItems)} textStyle={styles.text}/>
-          </Table>
+          <ScrollView>
+            <Text style={styles.dataText}>Uncategorized Items</Text>
+            <Table style={styles.tableStyle} borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
+              <Row data={tableColumns} style={styles.head} textStyle={styles.text} flexArr={[1, 1, 1]}/>
+              //TODO: add cells
+              {/* data.map((rowData, index) =>   
+                        (
+                            <TableWrapper key={index}  style={styles.row}>
+                                 <Cell key={0} data = {<CheckBox value={this.checkIfChecked(rowData[0],selectedItems)} onValueChange={()=>this.setSelection(rowData[0])} />} />
+                                 <Cell key={1} data = {rowData[1]} textStyle={styles.text}/>
+                                 <Cell key={2} data = {rowData[2]} textStyle={styles.text}/>
+                            </TableWrapper>
+                        )
+                        ) */}
+            </Table>
+          </ScrollView>
         )
 } 
-      </View>
-
-      <View style={{flex: 6}}>
-        {showSpinner && <ActivityIndicator size="large" />}
       </View>
     </View>
   );
@@ -98,9 +107,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   uncatItemsContainer: {
-    flex: 10,
+    flex: 15,
     flexDirection: 'row',
+    marginLeft: 5,
+    marginRight: 5
   },
-  head: { height: 40, backgroundColor: '#f1f8ff' },
-  text: { margin: 6 }
+  head: { height: 40, color: 'black', backgroundColor: '#f1f8ff'},
+  text: { margin: 6 , color: 'black'},
+  tableStyle: {width: '100%'},
 });

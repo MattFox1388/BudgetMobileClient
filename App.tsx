@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {Header, Icon} from 'react-native-elements';
+import React  from 'react';
+import {Header} from 'react-native-elements';
 import HomeDropdown from './src/components/HomeDropdown';
 import LoginIcon from './src/components/LoginIcon';
 import {NavigationContainer} from '@react-navigation/native';
