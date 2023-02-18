@@ -4,9 +4,8 @@ import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, ScrollView, StyleSheet, Text, View} from 'react-native';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import { convertToTableFormat, convertToUncategorizedItem, UncategorizedItem } from '../../shared/UncategorizedItem';
-import { Table, Row, Rows, Cell, TableWrapper } from 'react-native-table-component';
 import * as _ from 'underscore'
-import { CheckBox } from 'react-native-elements';
+import { DataTable } from 'react-native-paper';
 
 
 const tableColumns = [
@@ -17,7 +16,7 @@ const tableColumns = [
 
 export const UncategorizedItemsPage: React.FC = () => {
   const [uncategorizedItems, setUncategorizedItems] = React.useState<
-  Array<Array<String>>
+  Array<UncategorizedItem>
   >([]);
   const [showSpinner, setShowSpinner] = useState(false);
 
@@ -40,7 +39,7 @@ export const UncategorizedItemsPage: React.FC = () => {
            return convertToUncategorizedItem(row);
           },
         );
-        setUncategorizedItems(convertToTableFormat(uncategorizedItems));
+        setUncategorizedItems(uncategorizedItems);
       } catch (error: any) {
         if (axios.isAxiosError(error)) {
           const axiosError = error as AxiosError;
@@ -64,19 +63,24 @@ export const UncategorizedItemsPage: React.FC = () => {
         ) : (
           <ScrollView>
             <Text style={styles.dataText}>Uncategorized Items</Text>
-            <Table style={styles.tableStyle} borderStyle={{borderWidth: 2, borderColor: '#c8e1ff'}}>
-              <Row data={tableColumns} style={styles.head} textStyle={styles.text} flexArr={[1, 1, 1]}/>
-              //TODO: add cells
-              {/* data.map((rowData, index) =>   
-                        (
-                            <TableWrapper key={index}  style={styles.row}>
-                                 <Cell key={0} data = {<CheckBox value={this.checkIfChecked(rowData[0],selectedItems)} onValueChange={()=>this.setSelection(rowData[0])} />} />
-                                 <Cell key={1} data = {rowData[1]} textStyle={styles.text}/>
-                                 <Cell key={2} data = {rowData[2]} textStyle={styles.text}/>
-                            </TableWrapper>
-                        )
-                        ) */}
-            </Table>
+            <DataTable>
+              <DataTable.Header>
+                {tableColumns.map((column, index) => {
+                  return (
+                    <DataTable.Title textStyle={styles.dataText} key={index}>{column}</DataTable.Title>
+                  );
+                })}
+              </DataTable.Header>
+              {uncategorizedItems.map((row, index) => {
+                return (
+                  <DataTable.Row key={index}>
+                    <DataTable.Cell textStyle={styles.dataText}>{row.date}</DataTable.Cell>
+                    <DataTable.Cell textStyle={styles.dataText}>{row.month_description}</DataTable.Cell>
+                    <DataTable.Cell textStyle={styles.dataText}></DataTable.Cell>
+                  </DataTable.Row>
+                );
+              })}
+            </DataTable>
           </ScrollView>
         )
 } 
@@ -99,7 +103,7 @@ const styles = StyleSheet.create({
     color: 'black',
     alignSelf: 'flex-start',
     paddingLeft: 5,
-    fontSize: 15,
+    fontSize: 10,
   },
   container: {
     flex: 1,
@@ -113,6 +117,7 @@ const styles = StyleSheet.create({
     marginRight: 5
   },
   head: { height: 40, color: 'black', backgroundColor: '#f1f8ff'},
-  text: { margin: 6 , color: 'black'},
   tableStyle: {width: '100%'},
+  tableText: { color: 'black', fontSize: 10, textAlign: 'center' },
+  tableTitle: { marginBottom: 10 },
 });
