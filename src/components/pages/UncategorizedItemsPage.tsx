@@ -35,6 +35,7 @@ export const UncategorizedItemsPage: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalValue, setModalValue] = React.useState(CategoryType.Need);
   const [modalTitle, setModalTitle] = useState('');
+  const [modalIndex, setModalIndex] = useState(0);
 
   useEffect(() => {
     const setUncategorizedItemsFn = async () => {
@@ -59,7 +60,7 @@ export const UncategorizedItemsPage: React.FC = () => {
       } catch (error: any) {
         if (axios.isAxiosError(error)) {
           const axiosError = error as AxiosError;
-          console.log('axios error: ' + axiosError);
+          console.log('axios error: ' + axiosError.status);
         }
       }
       setShowSpinner(false);
@@ -68,11 +69,44 @@ export const UncategorizedItemsPage: React.FC = () => {
   }, []);
 
   const openModal = (index: number) => {
-    console.log('index: ' + index);
+    setModalIndex(index);
     setModalTitle('Set Category');
     setModalValue(CategoryType.Need);
     setModalVisible(true);
   };
+
+  const setUncatItem() => {
+    const token = await EncryptedStorage.getItem('login_token');
+    // get uncategorized items
+    setShowSpinner(true);
+    const data = {
+      cat_id: modalValue.toString,
+      month_record_id: uncategorizedItems[modalIndex].month_id,
+    };
+
+    try {
+      const response = await axios.post(
+        BUDGET_API_URL + `/set_record_categories?token=${token}`,
+        data,
+        {
+          timeout: 8000,
+        },
+      );
+
+      const uncategorizedItems: UncategorizedItem[] = response.data[
+        'month_records'
+      ].map((row: any) => {
+        return convertToUncategorizedItem(row);
+      });
+      setUncategorizedItems(uncategorizedItems);
+    } catch (error: any) {
+      if (axios.isAxiosError(error)) {
+        const axiosError = error as AxiosError;
+        console.log('axios error: ' + axiosError.status);
+      }
+    }
+    setShowSpinner(false);
+  }
 
   const hideModal = () => setModalVisible(false);
 
@@ -114,7 +148,7 @@ export const UncategorizedItemsPage: React.FC = () => {
                 <RadioButton.IOS value={ CategoryType[CategoryType.Ignore] } />
               </View>
             </RadioButton.Group>
-            <Button mode="contained">Submit</Button>
+            <Button mode="contained" onPress={() => {}}>Submit</Button>
           </View>
         </Modal>
       </Portal>
