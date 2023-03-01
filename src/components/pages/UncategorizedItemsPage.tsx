@@ -75,14 +75,14 @@ export const UncategorizedItemsPage: React.FC = () => {
     setModalVisible(true);
   };
 
-  const setUncatItem() => {
+  const setUncatItem = async(): Promise<any> => {
     const token = await EncryptedStorage.getItem('login_token');
     // get uncategorized items
     setShowSpinner(true);
-    const data = {
+    const data = [{
       cat_id: modalValue.toString,
       month_record_id: uncategorizedItems[modalIndex].month_id,
-    };
+    }];
 
     try {
       const response = await axios.post(
@@ -92,13 +92,7 @@ export const UncategorizedItemsPage: React.FC = () => {
           timeout: 8000,
         },
       );
-
-      const uncategorizedItems: UncategorizedItem[] = response.data[
-        'month_records'
-      ].map((row: any) => {
-        return convertToUncategorizedItem(row);
-      });
-      setUncategorizedItems(uncategorizedItems);
+      console.log(`response: ${response}`)
     } catch (error: any) {
       if (axios.isAxiosError(error)) {
         const axiosError = error as AxiosError;
@@ -148,7 +142,7 @@ export const UncategorizedItemsPage: React.FC = () => {
                 <RadioButton.IOS value={ CategoryType[CategoryType.Ignore] } />
               </View>
             </RadioButton.Group>
-            <Button mode="contained" onPress={() => {}}>Submit</Button>
+            <Button mode="contained" onPress={() => { setUncatItem()}}>Submit</Button>
           </View>
         </Modal>
       </Portal>
