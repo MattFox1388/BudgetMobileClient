@@ -1,6 +1,6 @@
-import {BUDGET_API_URL} from '@env';
-import axios, {AxiosError} from 'axios';
-import React, {useEffect, useState} from 'react';
+import { BUDGET_API_URL } from '@env';
+import axios, { AxiosError } from 'axios';
+import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   ScrollView,
@@ -24,6 +24,7 @@ import {
   RadioButton,
 } from 'react-native-paper';
 import { CategoryType } from '../../shared/CategoryEnum';
+import { getMonthRecordsUncat, setRecordCategories } from '../../services/ApiService';
 
 const tableColumns = ['date', 'description', 'options'];
 
@@ -36,20 +37,13 @@ export const UncategorizedItemsPage: React.FC = () => {
   const [modalValue, setModalValue] = React.useState(CategoryType.Need);
   const [modalTitle, setModalTitle] = useState('');
   const [modalIndex, setModalIndex] = useState(0);
-
-  useEffect(() => {
-    const setUncategorizedItemsFn = async () => {
+  
+  const setUncategorizedItemsFn = async () => {
       const token = await EncryptedStorage.getItem('login_token');
       // get uncategorized items
       setShowSpinner(true);
       try {
-        const response = await axios.get(
-          BUDGET_API_URL + '/get_month_records_uncat',
-          {
-            params: {token: token},
-            timeout: 8000,
-          },
-        );
+       const response = await getMonthRecordsUncat(token ?? '') 
 
         const uncategorizedItems: UncategorizedItem[] = response.data[
           'month_records'
@@ -60,11 +54,13 @@ export const UncategorizedItemsPage: React.FC = () => {
       } catch (error: any) {
         if (axios.isAxiosError(error)) {
           const axiosError = error as AxiosError;
-          console.log('axios error: ' + axiosError.status);
+          console.log('axios error: ' + axiosError);
         }
       }
       setShowSpinner(false);
     };
+
+  useEffect(() => {
     setUncategorizedItemsFn();
   }, []);
 
@@ -74,32 +70,33 @@ export const UncategorizedItemsPage: React.FC = () => {
     setModalValue(CategoryType.Need);
     setModalVisible(true);
   };
+  
+  const closeModal = () => {
+    setModalVisible(false);
+    setModalIndex(0);
+    setModalValue(CategoryType.Need);
+  }
 
-  const setUncatItem = async(): Promise<any> => {
+  const setUncatItem = async (): Promise<any> => {
     const token = await EncryptedStorage.getItem('login_token');
-    // get uncategorized items
     setShowSpinner(true);
+    //TODO: if modalValue is ignore, then delete the record
     const data = [{
-      cat_id: modalValue.toString,
-      month_record_id: uncategorizedItems[modalIndex].month_id,
+      'cat_id': (modalValue + 1),
+      'month_record_id': uncategorizedItems[modalIndex].month_id,
     }];
 
     try {
-      const response = await axios.post(
-        BUDGET_API_URL + `/set_record_categories?token=${token}`,
-        data,
-        {
-          timeout: 8000,
-        },
-      );
-      console.log(`response: ${response}`)
+     await setRecordCategories(token ?? '', data) 
     } catch (error: any) {
       if (axios.isAxiosError(error)) {
         const axiosError = error as AxiosError;
-        console.log('axios error: ' + axiosError.status);
+        console.log('axios error: ' + axiosError)
       }
     }
     setShowSpinner(false);
+    setUncategorizedItemsFn();
+    closeModal();
   }
 
   const hideModal = () => setModalVisible(false);
@@ -107,7 +104,7 @@ export const UncategorizedItemsPage: React.FC = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.labelText}>Uncategorized Items</Text>
-      <View style={{flex: 1}}>
+      <View style={{ flex: 1 }}>
         {showSpinner && <ActivityIndicator size="large" />}
       </View>
       <Portal>
@@ -123,26 +120,26 @@ export const UncategorizedItemsPage: React.FC = () => {
               </View>
               <View>
                 <Text>Want</Text>
-                <RadioButton.IOS value={ CategoryType[CategoryType.Want] } />
+                <RadioButton.IOS value={CategoryType[CategoryType.Want]} />
               </View>
               <View>
                 <Text>Saving</Text>
-                <RadioButton.IOS value={ CategoryType[CategoryType.Saving] } />
+                <RadioButton.IOS value={CategoryType[CategoryType.Saving]} />
               </View>
               <View>
                 <Text>Income</Text>
-                <RadioButton.IOS value={ CategoryType[CategoryType.Income] } />
+                <RadioButton.IOS value={CategoryType[CategoryType.Income]} />
               </View>
               <View>
                 <Text>Other</Text>
-                <RadioButton.IOS value={ CategoryType[CategoryType.Other] } />
+                <RadioButton.IOS value={CategoryType[CategoryType.Other]} />
               </View>
               <View>
                 <Text>Ignore</Text>
-                <RadioButton.IOS value={ CategoryType[CategoryType.Ignore] } />
+                <RadioButton.IOS value={CategoryType[CategoryType.Ignore]} />
               </View>
             </RadioButton.Group>
-            <Button mode="contained" onPress={() => { setUncatItem()}}>Submit</Button>
+            <Button mode="contained" onPress={() => { setUncatItem() }}>Submit</Button>
           </View>
         </Modal>
       </Portal>
@@ -217,10 +214,10 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginRight: 5,
   },
-  head: {height: 40, color: 'black', backgroundColor: '#f1f8ff'},
-  tableStyle: {width: '100%'},
-  tableText: {color: 'black', fontSize: 10, textAlign: 'center'},
-  tableTitle: {marginBottom: 10},
+  head: { height: 40, color: 'black', backgroundColor: '#f1f8ff' },
+  tableStyle: { width: '100%' },
+  tableText: { color: 'black', fontSize: 10, textAlign: 'center' },
+  tableTitle: { marginBottom: 10 },
   modalContainer: {
     justifyContent: 'center',
     alignItems: 'center',
