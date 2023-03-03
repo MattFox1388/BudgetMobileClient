@@ -1,5 +1,4 @@
 import { BUDGET_API_URL } from '@env';
-import axios, { AxiosError } from 'axios';
 import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
@@ -25,6 +24,7 @@ import {
 } from 'react-native-paper';
 import { CategoryType } from '../../shared/CategoryEnum';
 import { getMonthRecordsUncat, setRecordCategories } from '../../services/ApiService';
+import axios, { AxiosError } from 'axios';
 
 const tableColumns = ['date', 'description', 'options'];
 
@@ -53,8 +53,8 @@ export const UncategorizedItemsPage: React.FC = () => {
         setUncategorizedItems(uncategorizedItems);
       } catch (error: any) {
         if (axios.isAxiosError(error)) {
-          const axiosError = error as AxiosError;
-          console.log('axios error: ' + axiosError);
+          const axAndroidError = error as AxiosError;
+          console.log('axAndroid error: ' + axAndroidError);
         }
       }
       setShowSpinner(false);
@@ -90,8 +90,8 @@ export const UncategorizedItemsPage: React.FC = () => {
      await setRecordCategories(token ?? '', data) 
     } catch (error: any) {
       if (axios.isAxiosError(error)) {
-        const axiosError = error as AxiosError;
-        console.log('axios error: ' + axiosError)
+        const axAndroidError = error as AxiosError;
+        console.log('axAndroid error: ' + axAndroidError)
       }
     }
     setShowSpinner(false);
@@ -116,27 +116,27 @@ export const UncategorizedItemsPage: React.FC = () => {
               value={CategoryType[modalValue]}>
               <View>
                 <Text>Need</Text>
-                <RadioButton.IOS value={CategoryType[CategoryType.Need]} />
+                <RadioButton.Android value={CategoryType[CategoryType.Need]} />
               </View>
               <View>
                 <Text>Want</Text>
-                <RadioButton.IOS value={CategoryType[CategoryType.Want]} />
+                <RadioButton.Android value={CategoryType[CategoryType.Want]} />
               </View>
               <View>
                 <Text>Saving</Text>
-                <RadioButton.IOS value={CategoryType[CategoryType.Saving]} />
+                <RadioButton.Android value={CategoryType[CategoryType.Saving]} />
               </View>
               <View>
                 <Text>Income</Text>
-                <RadioButton.IOS value={CategoryType[CategoryType.Income]} />
+                <RadioButton.Android value={CategoryType[CategoryType.Income]} />
               </View>
               <View>
                 <Text>Other</Text>
-                <RadioButton.IOS value={CategoryType[CategoryType.Other]} />
+                <RadioButton.Android value={CategoryType[CategoryType.Other]} />
               </View>
               <View>
                 <Text>Ignore</Text>
-                <RadioButton.IOS value={CategoryType[CategoryType.Ignore]} />
+                <RadioButton.Android value={CategoryType[CategoryType.Ignore]} />
               </View>
             </RadioButton.Group>
             <Button mode="contained" onPress={() => { setUncatItem() }}>Submit</Button>

@@ -26,6 +26,15 @@ export async function getMonthRecordsUncat(token: string) {
 }
 
 //TODO: implement this
-export async function ignoreMonthRecord(){
-    return
+export async function ignoreMonthRecord(token: string, data: number[]){
+    const response =  await axios.post(
+        BUDGET_API_URL + `/ignore_uncategorized_items?token=${token}`,
+        data,
+        {
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          timeout: 5000 
+        });
+         console.log(`response: ${response}`)
 }
