@@ -23,10 +23,10 @@ import {
   RadioButton,
 } from 'react-native-paper';
 import { CategoryType } from '../../shared/CategoryEnum';
-import { getMonthRecordsUncat, setRecordCategories } from '../../services/ApiService';
+import { getMonthRecordsUncat, ignoreMonthRecord, setRecordCategories } from '../../services/ApiService';
 import axios, { AxiosError } from 'axios';
 
-const tableColumns = ['date', 'description', 'options'];
+const tableColumns = ['date', 'description', 'amount', 'options'];
 
 export const UncategorizedItemsPage: React.FC = () => {
   const [uncategorizedItems, setUncategorizedItems] = React.useState<
@@ -87,7 +87,10 @@ export const UncategorizedItemsPage: React.FC = () => {
     }];
 
     try {
-     await setRecordCategories(token ?? '', data) 
+      if ((modalValue + 1) != 6)
+        await setRecordCategories(token ?? '', data) 
+      else
+        await ignoreMonthRecord(token ?? '', [uncategorizedItems[modalIndex].month_id])
     } catch (error: any) {
       if (axios.isAxiosError(error)) {
         const axAndroidError = error as AxiosError;
@@ -167,6 +170,9 @@ export const UncategorizedItemsPage: React.FC = () => {
                     </DataTable.Cell>
                     <DataTable.Cell textStyle={styles.dataText}>
                       {row.month_description}
+                    </DataTable.Cell>
+                    <DataTable.Cell textStyle={styles.dataText}>
+                      {row.amount}
                     </DataTable.Cell>
                     <View style={styles.dataText}>
                       <Button

@@ -7,6 +7,7 @@ export interface UncategorizedItem {
     is_need_want_saving: boolean;
     is_should_be_ignored: boolean;
     is_expense_or_ignore: boolean;
+    amount: number;
   }
 
   export const convertToUncategorizedItem = (data: any): UncategorizedItem => {
@@ -19,6 +20,7 @@ export interface UncategorizedItem {
       is_need_want_saving: data['uncategorizedItems'][0]['is_need_want_saving'],
       is_should_be_ignored: data['uncategorizedItems'][0]['is_should_be_ignored'],
       is_expense_or_ignore: data['uncategorizedItems'][0]['is_expense_or_ignore'],
+      amount: data['amount']
     };
   }
 

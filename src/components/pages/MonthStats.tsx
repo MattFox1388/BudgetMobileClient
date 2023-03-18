@@ -1,60 +1,93 @@
-import React from 'react';
-import {StyleSheet, View} from 'react-native';
-import { Text } from 'react-native-elements';
-import { VictoryPie } from 'victory-native';
+import React, {useEffect, useState} from 'react';
+import {ScrollView, StyleSheet, View} from 'react-native';
+import {Text} from 'react-native-elements';
+import {VictoryPie} from 'victory-native';
 import {MonthStatResponse} from '../../../types/MonthStatResponse';
+import {List} from 'react-native-paper';
 
 interface MonthStatsProps {
   selectedMonthStats: MonthStatResponse;
 }
 
+function currencyFormat(num: number) {
+  return '$' + num.toFixed(2).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+}
+
 export const MonthStats: React.FC<MonthStatsProps> = ({selectedMonthStats}) => {
-  const graphicData = [
-    {y: 10, x: '0%'},
-    {y: 90, x: '0%'},
-    {y: 50, x: '0%'},
-    {y: 20, x: '0%'},
-    {y: 70, x: '0%'},
-  ];
+  const [actualChart, setActualChart] = useState<
+    {x: string; y: number | undefined | null}[]
+  >([]);
+
+  useEffect(() => {
+    console.log(`month stats: ${selectedMonthStats.savings_actual}`);
+    setActualChart([
+      {x: 'needs', y: selectedMonthStats.needs_actual ?? 0},
+      {x: 'wants', y: selectedMonthStats.wants_actual ?? 0},
+      {x: 'savings', y: selectedMonthStats.savings_actual ?? 0},
+      {x: 'paycheck', y: selectedMonthStats.paycheck_actual ?? 0},
+      {x: 'other', y: selectedMonthStats.other_actual ?? 0},
+    ]);
+  }, []);
 
   return (
-    <View>
-      <Text style={styles.pieChartLabel}>Planned: </Text>
-      <VictoryPie
-        data={graphicData}
-        width={250}
-        height={250}
-        innerRadius={50}
-        colorScale="cool"
-        style={{
-          labels: {
-            fill: 'black',
-            fontSize: 15,
-            padding: 7,
-          },
-        }}
-      />
-      <Text style={styles.pieChartLabel}>Actual: </Text>
-      <VictoryPie
-        data={graphicData}
-        width={250}
-        height={250}
-        innerRadius={50}
-        colorScale="cool"
-        style={{
-          labels: {
-            fill: 'black',
-            fontSize: 15,
-            padding: 7,
-          },
-        }}
-      />
+    <View style={styles.containerStyle}>
+      <ScrollView>
+        <Text style={styles.pieChartLabel}>Chart: </Text>
+        <VictoryPie
+          data={actualChart}
+          width={250}
+          height={250}
+          innerRadius={50}
+          colorScale="cool"
+          style={{
+            labels: {
+              fill: 'black',
+              fontSize: 11,
+              padding: 7,
+            },
+          }}
+        />
+        <Text style={styles.pieChartLabel}>Numbers: </Text>
+        <View style={styles.listStyle}>
+          <List.Item
+            title="needs"
+            description={currencyFormat(selectedMonthStats.needs_actual ?? 0)}
+          />
+          <List.Item
+            title="wants"
+            description={currencyFormat(selectedMonthStats.wants_actual ?? 0)}
+          />
+          <List.Item
+            title="savings"
+            description={currencyFormat(selectedMonthStats.savings_actual ?? 0)}
+          />
+          <List.Item
+            title="paycheck"
+            description={currencyFormat(
+              selectedMonthStats.paycheck_actual ?? 0,
+            )}
+          />
+          <List.Item
+            title="other"
+            description={currencyFormat(selectedMonthStats.other_actual ?? 0)}
+          />
+        </View>
+      </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-    pieChartLabel: {
-        fontSize: 15
-      }
+  pieChartLabel: {
+    fontSize: 15,
+  },
+  containerStyle: {
+    paddingLeft: 10,
+  },
+  victoryPieStyle: {
+    paddingLeft: 5,
+  },
+  listStyle: {
+    fontWeight: 'normal',
+  },
 });

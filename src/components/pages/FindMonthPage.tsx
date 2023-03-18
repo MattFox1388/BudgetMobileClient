@@ -10,7 +10,7 @@ import {SelectList} from 'react-native-dropdown-select-list';
 import {BUDGET_API_URL} from '@env';
 import {MonthStatResponse} from '../../../types/MonthStatResponse';
 import {MonthStats} from './MonthStats';
-import axios, {Axios} from 'axios';
+import axios from 'axios';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import {AxiosError} from 'axios';
 import Toast from 'react-native-toast-message';
@@ -35,11 +35,12 @@ export const FindMonthPage: React.FC = () => {
           params: {token: token},
           timeout: 8000,
         });
-        const data: MonthStatResponse[] = response.data;
-        console.log('data: ' + data);
+        const data: MonthStatResponse[] = response.data['month_stats'];
+        console.log('data len: ' + response.data['month_stats'].length);
         setMonthStatData(data);
         setSelectListData(
           data.map((row, index) => {
+            console.log(`data: ${data}`)
             return {key: index, value: row.month_id + '/' + row.year_num};
           }),
         );
@@ -57,7 +58,7 @@ export const FindMonthPage: React.FC = () => {
       setShowSpinner(false);
     };
 
-    getMonthStat().catch(console.error);
+    getMonthStat()
   }, []);
 
   return (
