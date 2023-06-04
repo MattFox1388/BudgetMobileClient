@@ -29,6 +29,23 @@ export const MonthStats: React.FC<MonthStatsProps> = ({selectedMonthStats}) => {
     ]);
   }, []);
 
+  const getLeftover = () => {
+    let income = 0;
+    let expenses = 0;
+    if (selectedMonthStats.needs_actual)
+      expenses += selectedMonthStats.needs_actual
+    if (selectedMonthStats.wants_actual)
+      expenses += selectedMonthStats.wants_actual
+    if (selectedMonthStats.savings_actual)
+      expenses += selectedMonthStats.savings_actual
+    if (selectedMonthStats.paycheck_actual)
+      income += selectedMonthStats.paycheck_actual
+    if (selectedMonthStats.other_actual)
+      income += selectedMonthStats.other_actual
+
+    return income - expenses
+  }
+
   return (
     <View style={styles.containerStyle}>
       <ScrollView>
@@ -70,6 +87,10 @@ export const MonthStats: React.FC<MonthStatsProps> = ({selectedMonthStats}) => {
           <List.Item
             title="other"
             description={currencyFormat(selectedMonthStats.other_actual ?? 0)}
+          />
+          <List.Item
+            title="leftover"
+            description={currencyFormat(getLeftover())}
           />
         </View>
       </ScrollView>

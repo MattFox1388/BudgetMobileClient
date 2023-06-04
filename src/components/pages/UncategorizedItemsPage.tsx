@@ -80,7 +80,6 @@ export const UncategorizedItemsPage: React.FC = () => {
   const setUncatItem = async (): Promise<any> => {
     const token = await EncryptedStorage.getItem('login_token');
     setShowSpinner(true);
-    //TODO: if modalValue is ignore, then delete the record
     const data = [{
       'cat_id': (modalValue + 1),
       'month_record_id': uncategorizedItems[modalIndex].month_id,
