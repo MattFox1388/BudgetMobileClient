@@ -1,4 +1,5 @@
 {
   "name": "BudgetMobileClient",
-  "displayName": "BudgetMobileClient"
+  "displayName": "BudgetMobileClient",
+  "expo": { "sdkVersion": "48.0.0" }
 }
