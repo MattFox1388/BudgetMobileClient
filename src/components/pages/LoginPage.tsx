@@ -3,9 +3,9 @@ import axios from 'axios';
 import React, {useState} from 'react';
 import {Alert, Button, StyleSheet, Text, TextInput, View} from 'react-native';
 import * as qs from 'querystringify';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import * as RootNavigation from '../../navigation/RootNavigation';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { storeData } from '../../shared/StorageUtility';
 
 export const LoginPage: React.FC = () => {
   const [username, setUsername] = React.useState('');
@@ -37,7 +37,7 @@ export const LoginPage: React.FC = () => {
         console.log(response.data.token);
         //store token
         try {
-          await EncryptedStorage.setItem('login_token', response.data.token);
+          await storeData('login_token', response.data.token);
           RootNavigation.navigate('HomePage', {});
         } catch (error) {
           const {message} = error as Error;
@@ -119,3 +119,4 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
 });
+

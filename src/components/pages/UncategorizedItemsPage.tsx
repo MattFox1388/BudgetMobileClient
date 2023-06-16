@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import {
   convertToTableFormat,
   convertToUncategorizedItem,
@@ -25,6 +24,7 @@ import {
 import { CategoryType } from '../../shared/CategoryEnum';
 import { getMonthRecordsUncat, ignoreMonthRecord, setRecordCategories } from '../../services/ApiService';
 import axios, { AxiosError } from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const tableColumns = ['date', 'description', 'amount', 'options'];
 
@@ -39,7 +39,7 @@ export const UncategorizedItemsPage: React.FC = () => {
   const [modalIndex, setModalIndex] = useState(0);
   
   const setUncategorizedItemsFn = async () => {
-      const token = await EncryptedStorage.getItem('login_token');
+      const token = await AsyncStorage.getItem('login_token');
       // get uncategorized items
       setShowSpinner(true);
       try {
@@ -78,7 +78,7 @@ export const UncategorizedItemsPage: React.FC = () => {
   }
 
   const setUncatItem = async (): Promise<any> => {
-    const token = await EncryptedStorage.getItem('login_token');
+    const token = await AsyncStorage.getItem('login_token');
     setShowSpinner(true);
     const data = [{
       'cat_id': (modalValue + 1),

@@ -2,12 +2,12 @@ import axios from 'axios';
 import React, { useCallback, useState } from 'react';
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import DocumentPicker, {types}  from 'react-native-document-picker';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import * as RNFS from 'react-native-fs';
 import { ActivityIndicator } from 'react-native-paper';
 import { csvJSON, filterDiscResults, filterEduResults } from '../../shared/CsvToJsonUtility';
 import {BUDGET_API_URL} from '@env';
 import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const HomePage: React.FC = () => {
   const [showSpinner, setShowSpinner] = useState(false);
@@ -20,7 +20,7 @@ export const HomePage: React.FC = () => {
       const path = response.pop()?.uri;
       setShowSpinner(true);
       const json = readFile(path, false);
-      const token = await EncryptedStorage.getItem('login_token');
+      const token = await AsyncStorage.getItem('login_token');
       const amountProcessed = await axios.post(BUDGET_API_URL + `/ingest_edu_checking?token=${token}`, json, {timeout: 10000}); 
       console.log(`amountProcessed: ${JSON.stringify(amountProcessed.data)}`);
       Toast.show({
@@ -63,7 +63,7 @@ export const HomePage: React.FC = () => {
       const path = response.pop()?.uri;
       setShowSpinner(true);
       const json = readFile(path, false);
-      const token = await EncryptedStorage.getItem('login_token');
+      const token = await AsyncStorage.getItem('login_token');
       const amountProcessed = await axios.post(BUDGET_API_URL + `/ingest_edu_saving?token=${token}`, json, {timeout: 10000}); 
       console.log(`amountProcessed: ${JSON.stringify(amountProcessed.data)}`);
       Toast.show({
@@ -91,7 +91,7 @@ export const HomePage: React.FC = () => {
       const path = response.pop()?.uri;
       setShowSpinner(true);
       const json = readFile(path, true);
-      const token = await EncryptedStorage.getItem('login_token');
+      const token = await AsyncStorage.getItem('login_token');
       const amountProcessed = await axios.post(BUDGET_API_URL + `/ingest_disc?token=${token}`, json, {timeout: 10000}); 
       console.log(`amountProcessed: ${JSON.stringify(amountProcessed.data)}`);
       Toast.show({

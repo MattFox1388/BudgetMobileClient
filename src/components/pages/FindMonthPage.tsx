@@ -11,9 +11,9 @@ import {BUDGET_API_URL} from '@env';
 import {MonthStatResponse} from '../../../types/MonthStatResponse';
 import {MonthStats} from './MonthStats';
 import axios from 'axios';
-import EncryptedStorage from 'react-native-encrypted-storage';
 import {AxiosError} from 'axios';
 import Toast from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const FindMonthPage: React.FC = () => {
   const [monthStatData, setMonthStatData] = useState<MonthStatResponse[]>([]);
@@ -26,10 +26,10 @@ export const FindMonthPage: React.FC = () => {
   useEffect(() => {
     const getMonthStat = async () => {
       console.log('getMonthStat() called');
-      const token = await EncryptedStorage.getItem('login_token');
+      const token = await AsyncStorage.getItem('login_token');
 
       try {
-        //axios get request with timeout
+        //axios get request with 
         setShowSpinner(true);
         const response = await axios.get(BUDGET_API_URL + '/get_month_stats', {
           params: {token: token},
