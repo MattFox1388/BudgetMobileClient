@@ -1,7 +1,7 @@
 import React, {useRef, useState} from 'react';
 import { Dropdown } from 'react-native-material-dropdown-no-proptypes';
 import Icon from 'react-native-vector-icons/Octicons';
-import { useNavigation } from '@react-navigation/native';
+import { AntDesign } from '@expo/vector-icons';
 import * as RootNavigation from '../navigation/RootNavigation';
 
 
@@ -51,11 +51,7 @@ const HomeDropdown: React.FC = () => {
           dropdownPosition={0}
           data={data}
           onChangeText={onChangeText}
-          renderBase={() => <Icon 
-            name='three-bars' 
-            size={30} 
-            color='#000'
-          />}
+          renderBase={() => <AntDesign name="home" size={24} color="black" />}
         />
       </>
       

@@ -1,5 +1,5 @@
 import React from 'react';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import { AntDesign } from '@expo/vector-icons';
 import * as RootNavigation from '../navigation/RootNavigation';
 
 const LoginIcon: React.FC = () => {
@@ -8,12 +8,13 @@ const LoginIcon: React.FC = () => {
   };
   return (
     <>
-      <Icon
-        name="sign-in"
-        size={30}
-        style={{paddingTop: 10}}
-        onPress={navigateToLogin}
-      />
+      {/*<Icon*/}
+      {/*  name="sign-in"*/}
+      {/*  size={30}*/}
+      {/*  style={{paddingTop: 10}}*/}
+      {/*  onPress={navigateToLogin}*/}
+      {/*/>*/}
+        <AntDesign name="login" size={24} color="black" onPress={navigateToLogin}/>
     </>
   );
 };

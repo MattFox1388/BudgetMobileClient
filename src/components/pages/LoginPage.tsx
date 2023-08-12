@@ -1,4 +1,3 @@
-import {BUDGET_API_URL} from '@env';
 import axios from 'axios';
 import React, {useState} from 'react';
 import {Alert, Button, StyleSheet, Text, TextInput, View} from 'react-native';
@@ -21,7 +20,7 @@ export const LoginPage: React.FC = () => {
     setBufferScreen(true);
     axios
       .post(
-        BUDGET_API_URL + '/login',
+        process.env.BUDGET_API_URL + '/login',
         qs.stringify({
           username: username,
           password: password,

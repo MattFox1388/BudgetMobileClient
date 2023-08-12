@@ -33,18 +33,18 @@ export const MonthStats: React.FC<MonthStatsProps> = ({selectedMonthStats}) => {
     let income = 0;
     let expenses = 0;
     if (selectedMonthStats.needs_actual)
-      expenses += selectedMonthStats.needs_actual
+      expenses += selectedMonthStats.needs_actual;
     if (selectedMonthStats.wants_actual)
-      expenses += selectedMonthStats.wants_actual
+      expenses += selectedMonthStats.wants_actual;
     if (selectedMonthStats.savings_actual)
-      expenses += selectedMonthStats.savings_actual
+      expenses += selectedMonthStats.savings_actual;
     if (selectedMonthStats.paycheck_actual)
-      income += selectedMonthStats.paycheck_actual
+      income += selectedMonthStats.paycheck_actual;
     if (selectedMonthStats.other_actual)
-      income += selectedMonthStats.other_actual
+      income += selectedMonthStats.other_actual;
 
-    return income - expenses
-  }
+    return income - expenses;
+  };
 
   return (
     <View style={styles.containerStyle}>
@@ -65,7 +65,7 @@ export const MonthStats: React.FC<MonthStatsProps> = ({selectedMonthStats}) => {
           }}
         />
         <Text style={styles.pieChartLabel}>Numbers: </Text>
-        <View style={styles.listStyle}>
+        <View>
           <List.Item
             title="needs"
             description={currencyFormat(selectedMonthStats.needs_actual ?? 0)}

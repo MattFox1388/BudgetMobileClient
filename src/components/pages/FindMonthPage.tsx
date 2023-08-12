@@ -7,7 +7,6 @@ import {
   ScrollView,
 } from 'react-native';
 import {SelectList} from 'react-native-dropdown-select-list';
-import {BUDGET_API_URL} from '@env';
 import {MonthStatResponse} from '../../../types/MonthStatResponse';
 import {MonthStats} from './MonthStats';
 import axios from 'axios';
@@ -31,7 +30,7 @@ export const FindMonthPage: React.FC = () => {
       try {
         //axios get request with 
         setShowSpinner(true);
-        const response = await axios.get(BUDGET_API_URL + '/get_month_stats', {
+        const response = await axios.get(process.env.BUDGET_API_URL + '/get_month_stats', {
           params: {token: token},
           timeout: 8000,
         });
@@ -40,7 +39,7 @@ export const FindMonthPage: React.FC = () => {
         setMonthStatData(data);
         setSelectListData(
           data.map((row, index) => {
-            console.log(`data: ${data}`)
+            console.log(`data: ${data}`);
             return {key: index, value: row.month_id + '/' + row.year_num};
           }),
         );
@@ -58,7 +57,7 @@ export const FindMonthPage: React.FC = () => {
       setShowSpinner(false);
     };
 
-    getMonthStat()
+    getMonthStat();
   }, []);
 
   return (

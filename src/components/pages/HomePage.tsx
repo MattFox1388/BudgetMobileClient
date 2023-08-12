@@ -2,10 +2,9 @@ import axios from 'axios';
 import React, { useCallback, useState } from 'react';
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import DocumentPicker, {types}  from 'react-native-document-picker';
-import * as RNFS from 'react-native-fs';
+import * as FileSystem from 'expo-file-system';
 import { ActivityIndicator } from 'react-native-paper';
 import { csvJSON, filterDiscResults, filterEduResults } from '../../shared/CsvToJsonUtility';
-import {BUDGET_API_URL} from '@env';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -21,7 +20,7 @@ export const HomePage: React.FC = () => {
       setShowSpinner(true);
       const json = readFile(path, false);
       const token = await AsyncStorage.getItem('login_token');
-      const amountProcessed = await axios.post(BUDGET_API_URL + `/ingest_edu_checking?token=${token}`, json, {timeout: 10000}); 
+      const amountProcessed = await axios.post(process.env.BUDGET_API_URL + `/ingest_edu_checking?token=${token}`, json, {timeout: 10000});
       console.log(`amountProcessed: ${JSON.stringify(amountProcessed.data)}`);
       Toast.show({
         type: 'success',  
@@ -39,12 +38,12 @@ export const HomePage: React.FC = () => {
     }
   }, []);
 
-  const readFile = async (path: string | undefined, isDiscover: boolean): Promise<{}[] | null>=> {
+  const readFile = async (path: string | undefined, isDiscover: boolean): Promise<never[] | any>=> {
     if (typeof path === 'undefined') {
       console.log(`wrong path, path: ${path}`);
       return null;
     }
-    const response = await RNFS.readFile(path);
+    const response = await FileSystem.readAsStringAsync(path);
     let jsonifiedResponse = csvJSON(response);
     if (!isDiscover) {
       jsonifiedResponse = filterEduResults(jsonifiedResponse);
@@ -64,7 +63,7 @@ export const HomePage: React.FC = () => {
       setShowSpinner(true);
       const json = readFile(path, false);
       const token = await AsyncStorage.getItem('login_token');
-      const amountProcessed = await axios.post(BUDGET_API_URL + `/ingest_edu_saving?token=${token}`, json, {timeout: 10000}); 
+      const amountProcessed = await axios.post(process.env.BUDGET_API_URL + `/ingest_edu_saving?token=${token}`, json, {timeout: 10000});
       console.log(`amountProcessed: ${JSON.stringify(amountProcessed.data)}`);
       Toast.show({
         type: 'success',  
@@ -92,7 +91,7 @@ export const HomePage: React.FC = () => {
       setShowSpinner(true);
       const json = readFile(path, true);
       const token = await AsyncStorage.getItem('login_token');
-      const amountProcessed = await axios.post(BUDGET_API_URL + `/ingest_disc?token=${token}`, json, {timeout: 10000}); 
+      const amountProcessed = await axios.post(process.env.BUDGET_API_URL + `/ingest_disc?token=${token}`, json, {timeout: 10000});
       console.log(`amountProcessed: ${JSON.stringify(amountProcessed.data)}`);
       Toast.show({
         type: 'success',  

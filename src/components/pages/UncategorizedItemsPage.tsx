@@ -1,4 +1,3 @@
-import { BUDGET_API_URL } from '@env';
 import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
@@ -43,7 +42,7 @@ export const UncategorizedItemsPage: React.FC = () => {
       // get uncategorized items
       setShowSpinner(true);
       try {
-       const response = await getMonthRecordsUncat(token ?? '') 
+       const response = await getMonthRecordsUncat(token ?? '') ;
 
         const uncategorizedItems: UncategorizedItem[] = response.data[
           'month_records'
@@ -75,7 +74,7 @@ export const UncategorizedItemsPage: React.FC = () => {
     setModalVisible(false);
     setModalIndex(0);
     setModalValue(CategoryType.Need);
-  }
+  };
 
   const setUncatItem = async (): Promise<any> => {
     const token = await AsyncStorage.getItem('login_token');
@@ -87,19 +86,19 @@ export const UncategorizedItemsPage: React.FC = () => {
 
     try {
       if ((modalValue + 1) != 6)
-        await setRecordCategories(token ?? '', data) 
+        await setRecordCategories(token ?? '', data);
       else
-        await ignoreMonthRecord(token ?? '', [uncategorizedItems[modalIndex].month_id])
+        await ignoreMonthRecord(token ?? '', [uncategorizedItems[modalIndex].month_id]);
     } catch (error: any) {
       if (axios.isAxiosError(error)) {
         const axAndroidError = error as AxiosError;
-        console.log('axAndroid error: ' + axAndroidError)
+        console.log('axAndroid error: ' + axAndroidError);
       }
     }
     setShowSpinner(false);
-    setUncategorizedItemsFn();
+    await setUncategorizedItemsFn();
     closeModal();
-  }
+  };
 
   const hideModal = () => setModalVisible(false);
 
@@ -141,7 +140,7 @@ export const UncategorizedItemsPage: React.FC = () => {
                 <RadioButton.Android value={CategoryType[CategoryType.Ignore]} />
               </View>
             </RadioButton.Group>
-            <Button mode="contained" onPress={() => { setUncatItem() }}>Submit</Button>
+            <Button mode="contained" onPress={() => { setUncatItem(); }}>Submit</Button>
           </View>
         </Modal>
       </Portal>

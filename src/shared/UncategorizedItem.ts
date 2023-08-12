@@ -24,11 +24,11 @@ export interface UncategorizedItem {
     };
   }
 
-  export const convertToTableFormat = (uncategorizedItems: UncategorizedItem[]): Array<Array<String>> => {
-    const result: Array<Array<String>> = uncategorizedItems.map( (item: UncategorizedItem) => {
-      return [item.id.toString(), item.month_id.toString(), item.date, item.month_description.toString(), ""]
-    })
-    console.log(`result: ${result}`)
+  export const convertToTableFormat = (uncategorizedItems: UncategorizedItem[]): Array<Array<string>> => {
+    const result: Array<Array<string>> = uncategorizedItems.map( (item: UncategorizedItem) => {
+      return [item.id.toString(), item.month_id.toString(), item.date, item.month_description.toString(), ""];
+    });
+    console.log(`result: ${result}`);
     
     return result;
-  }
+  };
