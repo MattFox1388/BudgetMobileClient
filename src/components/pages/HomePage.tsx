@@ -1,22 +1,24 @@
 import axios from 'axios';
 import React, { useCallback, useState } from 'react';
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
-import DocumentPicker, {types}  from 'react-native-document-picker';
+// import DocumentPicker, {types}  from 'react-native-document-picker';
 import * as FileSystem from 'expo-file-system';
 import { ActivityIndicator } from 'react-native-paper';
 import { csvJSON, filterDiscResults, filterEduResults } from '../../shared/CsvToJsonUtility';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as DocumentPicker from 'expo-document-picker';
 
 export const HomePage: React.FC = () => {
   const [showSpinner, setShowSpinner] = useState(false);
   const onIngestEduCheckingPress = useCallback(async () => {
     try {
-      const response = await DocumentPicker.pick({
-        presentationStyle: 'fullScreen',
-        type: [types.csv] 
+      const response = await DocumentPicker.getDocumentAsync({
+        type: ["text/csv"] 
       });
-      const path = response.pop()?.uri;
+      if(response.type !== "success")
+        return
+      const path = response?.uri;
       setShowSpinner(true);
       const json = readFile(path, false);
       const token = await AsyncStorage.getItem('login_token');
@@ -55,11 +57,12 @@ export const HomePage: React.FC = () => {
 
   const onIngestEduSavingPress = useCallback(async () => {
     try {
-      const response = await DocumentPicker.pick({
-        presentationStyle: 'fullScreen',
-        type: [types.csv] 
+      const response = await DocumentPicker.getDocumentAsync({
+        type: ["text/csv"] 
       });
-      const path = response.pop()?.uri;
+      if(response.type !== "success")
+        return
+      const path = response?.uri;
       setShowSpinner(true);
       const json = readFile(path, false);
       const token = await AsyncStorage.getItem('login_token');
@@ -83,11 +86,12 @@ export const HomePage: React.FC = () => {
 
   const onIngestDiscPress = useCallback(async () => {
     try {
-      const response = await DocumentPicker.pick({
-        presentationStyle: 'fullScreen',
-        type: [types.csv] 
+      const response = await DocumentPicker.getDocumentAsync({
+        type: ["text/csv"] 
       });
-      const path = response.pop()?.uri;
+      if(response.type !== "success")
+        return
+      const path = response?.uri;
       setShowSpinner(true);
       const json = readFile(path, true);
       const token = await AsyncStorage.getItem('login_token');
