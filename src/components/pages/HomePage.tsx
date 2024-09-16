@@ -1,10 +1,8 @@
 import axios from 'axios';
 import React, { useCallback, useState } from 'react';
 import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
-// import DocumentPicker, {types}  from 'react-native-document-picker';
-import * as FileSystem from 'expo-file-system';
 import { ActivityIndicator } from 'react-native-paper';
-import { csvJSON, filterDiscResults, filterEduResults } from '../../shared/CsvToJsonUtility';
+import { readFile } from '../../shared/CsvToJsonUtility';
 import Toast from 'react-native-toast-message';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as DocumentPicker from 'expo-document-picker';
@@ -12,17 +10,23 @@ import * as DocumentPicker from 'expo-document-picker';
 export const HomePage: React.FC = () => {
   const [showSpinner, setShowSpinner] = useState(false);
   const onIngestEduCheckingPress = useCallback(async () => {
+    console.log('starting checking processing...')
     try {
       const response = await DocumentPicker.getDocumentAsync({
         type: ["text/csv"] 
       });
-      if(response.type !== "success")
-        return
-      const path = response?.uri;
+      
+      const path = getUri(response)
       setShowSpinner(true);
-      const json = readFile(path, false);
+      const json = await readFile(path, false);
+      console.log(`-----> json results: ${JSON.stringify(json)}`)
       const token = await AsyncStorage.getItem('login_token');
-      const amountProcessed = await axios.post(process.env.BUDGET_API_URL + `/ingest_edu_checking?token=${token}`, json, {timeout: 10000});
+      const amountProcessed = await axios.post(process.env.BUDGET_API_URL + `/ingest_edu_checking?token=${token}`, json, {
+        timeout: 10000,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      });
       console.log(`amountProcessed: ${JSON.stringify(amountProcessed.data)}`);
       Toast.show({
         type: 'success',  
@@ -37,34 +41,30 @@ export const HomePage: React.FC = () => {
         console.log(err.response.headers);
       }
       console.warn(err);
+      setShowSpinner(false)
     }
   }, []);
 
-  const readFile = async (path: string | undefined, isDiscover: boolean): Promise<never[] | any>=> {
-    if (typeof path === 'undefined') {
-      console.log(`wrong path, path: ${path}`);
-      return null;
-    }
-    const response = await FileSystem.readAsStringAsync(path);
-    let jsonifiedResponse = csvJSON(response);
-    if (!isDiscover) {
-      jsonifiedResponse = filterEduResults(jsonifiedResponse);
-    } else {
-      jsonifiedResponse = filterDiscResults(jsonifiedResponse);
-    }
-    return jsonifiedResponse;
-  };
+  const getUri = (response: any) => {
+    console.log(response.assets)
+      const assetsList = response.assets ?? []
+      const assetsSize = response?.assets?.length ?? 0
+      console.log(`asset size: ${assetsSize}`)
+      if(!assetsList[assetsSize - 1].uri ) {
+        throw Error("The processing failed at getting uri.")
+      }
+      return assetsList[assetsSize - 1].uri
+  }
 
   const onIngestEduSavingPress = useCallback(async () => {
     try {
       const response = await DocumentPicker.getDocumentAsync({
         type: ["text/csv"] 
       });
-      if(response.type !== "success")
-        return
-      const path = response?.uri;
+      const path = getUri(response)
       setShowSpinner(true);
-      const json = readFile(path, false);
+      const json = await readFile(path, false);
+      console.log(`-----> json results: ${JSON.stringify(json)}`)
       const token = await AsyncStorage.getItem('login_token');
       const amountProcessed = await axios.post(process.env.BUDGET_API_URL + `/ingest_edu_saving?token=${token}`, json, {timeout: 10000});
       console.log(`amountProcessed: ${JSON.stringify(amountProcessed.data)}`);
@@ -89,11 +89,10 @@ export const HomePage: React.FC = () => {
       const response = await DocumentPicker.getDocumentAsync({
         type: ["text/csv"] 
       });
-      if(response.type !== "success")
-        return
-      const path = response?.uri;
+      const path = getUri(response)
       setShowSpinner(true);
-      const json = readFile(path, true);
+      const json = await readFile(path, true);
+      console.log(`-----> json results: ${JSON.stringify(json)}`)
       const token = await AsyncStorage.getItem('login_token');
       const amountProcessed = await axios.post(process.env.BUDGET_API_URL + `/ingest_disc?token=${token}`, json, {timeout: 10000});
       console.log(`amountProcessed: ${JSON.stringify(amountProcessed.data)}`);
@@ -122,9 +121,11 @@ export const HomePage: React.FC = () => {
       <View style={styles.ingestContainer}>
         <View style={styles.ingestRow}>
           <Text style={styles.labelText}>Ingest Edu Checking: </Text>
-          <TouchableOpacity  style={styles.buttonStyle} onPress={onIngestEduCheckingPress}>
-            <Text>Select</Text>
-          </TouchableOpacity>
+          <div className='ingest-edu-checking-btn'>
+            <TouchableOpacity  style={styles.buttonStyle} onPress={onIngestEduCheckingPress}>
+              <Text>Select</Text>
+            </TouchableOpacity>
+          </div>
         </View>
         <View style={styles.ingestRow}>
           <Text style={styles.labelText}>Ingest Edu Savings: </Text>

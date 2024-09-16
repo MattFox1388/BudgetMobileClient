@@ -15,6 +15,46 @@ export const LoginPage: React.FC = () => {
     Alert.alert('Login Error', error);
   };
 
+  const backendLoginUpdated = () => {
+    console.log('login started...');
+    setBufferScreen(true);
+    const request = new Request(process.env.BUDGET_API_URL + '/login', {
+      method: "POST",
+      headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: qs.stringify({
+        username: username,
+        password: password,
+      })
+    });
+
+    fetch(request)
+    .then(async (response) => {
+      if (response.status === 200) {
+        const jjson = await response.json()
+        const token = jjson.token
+        console.log(`Got token ${token}`)
+        try {
+          await storeData('login_token', token);
+          RootNavigation.navigate('HomePage', {});
+        } catch (error) {
+          const {message} = error as Error;
+          console.error('err:' + error);
+          setBufferScreen(false);
+          showError(message);
+        }
+      } else {
+        throw new Error("Something went wrong on API server!");
+      }
+    })
+    .catch((error) => {
+      console.error(`error: ${error}`);
+      console.log(error.message)
+      setBufferScreen(false);
+    });
+  }
+
   const backendLogin = () => {
     console.log('login started...');
     setBufferScreen(true);
@@ -28,8 +68,9 @@ export const LoginPage: React.FC = () => {
         {
           headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
+            // 'Content-Type': 'multipart/form-data',
           },
-          timeout: 2000
+          timeout: 6000
         },
       )
       .then(async response => {
@@ -52,6 +93,7 @@ export const LoginPage: React.FC = () => {
           showError(errorJson);
         } else if (error.request) {
           const requestJSON = JSON.stringify(error.request);
+          console.log(error.message)
           console.log('err2: ' + requestJSON);
           showError(requestJSON);
         } else {
@@ -67,23 +109,29 @@ export const LoginPage: React.FC = () => {
       <Spinner textContent={'Loading...'} visible={bufferScreen} />
       <View style={styles.rowContainer}>
         <Text style={styles.text}>Username:</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={setUsername}
-          value={username}
-        />
+        <div className="username-input">
+          <TextInput
+            style={styles.input}
+            onChangeText={setUsername}
+            value={username}
+          />
+        </div>
       </View>
       <View style={styles.rowContainer}>
         <Text style={styles.text}>Password:</Text>
-        <TextInput
-          style={styles.input}
-          onChangeText={setPassword}
-          secureTextEntry={true}
-          value={password}
-        />
+        <div className='password-input'>
+          <TextInput
+            style={styles.input}
+            onChangeText={setPassword}
+            secureTextEntry={true}
+            value={password}
+          />
+        </div>
       </View>
       <View style={styles.buttonContainer}>
-        <Button title="Login" onPress={backendLogin} />
+        <div className='login-start-btn'>
+          <Button title="Login" onPress={backendLogin} />
+        </div>
       </View>
       <View style={{flex: 8}} />
     </View>

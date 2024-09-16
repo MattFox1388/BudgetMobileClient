@@ -1,3 +1,20 @@
+import * as FileSystem from 'expo-file-system';
+
+export const readFile = async (path: string | undefined, isDiscover: boolean): Promise<never[] | any>=> {
+  if (typeof path === 'undefined') {
+    console.log(`wrong path, path: ${path}`);
+    return null;
+  }
+  const response = await FileSystem.readAsStringAsync(path);
+  let jsonifiedResponse = csvJSON(response);
+  if (!isDiscover) {
+    jsonifiedResponse = filterEduResults(jsonifiedResponse);
+  } else {
+    jsonifiedResponse = filterDiscResults(jsonifiedResponse);
+  }
+  return jsonifiedResponse;
+};
+
 export const csvJSON = (csv: string): {}[]=> {
     //replae comma enclosed within double quotes
     console.log(`csv: ${csv}`);
@@ -27,7 +44,9 @@ export const csvJSON = (csv: string): {}[]=> {
         result.push(obj);
   
     }
-   
+    
+    console.log("csv to JSON result: ");
+    console.log(result);
     return result;
   };
 

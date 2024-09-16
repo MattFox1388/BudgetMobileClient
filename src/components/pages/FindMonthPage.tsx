@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     justifyContent: 'center',
     alignContent: 'center',
-    marginTop: 10,
+    marginTop: 60,
   },
   headerLabel: {
     alignSelf: 'center',

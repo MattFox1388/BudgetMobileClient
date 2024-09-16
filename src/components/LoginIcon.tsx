@@ -7,7 +7,7 @@ const LoginIcon: React.FC = () => {
     RootNavigation.navigate('LoginPage', {});
   };
   return (
-    <>
+    <div className='login-btn'>
       {/*<Icon*/}
       {/*  name="sign-in"*/}
       {/*  size={30}*/}
@@ -15,7 +15,7 @@ const LoginIcon: React.FC = () => {
       {/*  onPress={navigateToLogin}*/}
       {/*/>*/}
         <AntDesign name="login" size={24} color="black" onPress={navigateToLogin}/>
-    </>
+    </div>
   );
 };
 
