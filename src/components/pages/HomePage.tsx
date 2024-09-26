@@ -121,11 +121,11 @@ export const HomePage: React.FC = () => {
       <View style={styles.ingestContainer}>
         <View style={styles.ingestRow}>
           <Text style={styles.labelText}>Ingest Edu Checking: </Text>
-          <div className='ingest-edu-checking-btn'>
+          <View >
             <TouchableOpacity  style={styles.buttonStyle} onPress={onIngestEduCheckingPress}>
               <Text>Select</Text>
             </TouchableOpacity>
-          </div>
+          </View>
         </View>
         <View style={styles.ingestRow}>
           <Text style={styles.labelText}>Ingest Edu Savings: </Text>

@@ -1,13 +1,14 @@
 import React from 'react';
 import { AntDesign } from '@expo/vector-icons';
 import * as RootNavigation from '../navigation/RootNavigation';
+import { View } from 'react-native';
 
 const LoginIcon: React.FC = () => {
   const navigateToLogin = () => {
     RootNavigation.navigate('LoginPage', {});
   };
   return (
-    <div className='login-btn'>
+    <View>
       {/*<Icon*/}
       {/*  name="sign-in"*/}
       {/*  size={30}*/}
@@ -15,7 +16,7 @@ const LoginIcon: React.FC = () => {
       {/*  onPress={navigateToLogin}*/}
       {/*/>*/}
         <AntDesign name="login" size={24} color="black" onPress={navigateToLogin}/>
-    </div>
+    </View>
   );
 };
 

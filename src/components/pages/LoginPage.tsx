@@ -109,29 +109,29 @@ export const LoginPage: React.FC = () => {
       <Spinner textContent={'Loading...'} visible={bufferScreen} />
       <View style={styles.rowContainer}>
         <Text style={styles.text}>Username:</Text>
-        <div className="username-input">
+        <View >
           <TextInput
             style={styles.input}
             onChangeText={setUsername}
             value={username}
           />
-        </div>
+        </View>
       </View>
       <View style={styles.rowContainer}>
         <Text style={styles.text}>Password:</Text>
-        <div className='password-input'>
+        <View>
           <TextInput
             style={styles.input}
             onChangeText={setPassword}
             secureTextEntry={true}
             value={password}
           />
-        </div>
+        </View>
       </View>
       <View style={styles.buttonContainer}>
-        <div className='login-start-btn'>
+        <View >
           <Button title="Login" onPress={backendLogin} />
-        </div>
+        </View>
       </View>
       <View style={{flex: 8}} />
     </View>
