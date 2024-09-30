@@ -117,27 +117,27 @@ export const UncategorizedItemsPage: React.FC = () => {
               value={CategoryType[modalValue]}>
               <View>
                 <Text>Need</Text>
-                <RadioButton.Android value={CategoryType[CategoryType.Need]} />
+                <RadioButton.Android testID={"need-btn"} value={CategoryType[CategoryType.Need]} />
               </View>
               <View>
                 <Text>Want</Text>
-                <RadioButton.Android value={CategoryType[CategoryType.Want]} />
+                <RadioButton.Android testID={"want-btn"} value={CategoryType[CategoryType.Want]} />
               </View>
               <View>
                 <Text>Saving</Text>
-                <RadioButton.Android value={CategoryType[CategoryType.Saving]} />
+                <RadioButton.Android testID={"saving-btn"} value={CategoryType[CategoryType.Saving]} />
               </View>
               <View>
                 <Text>Income</Text>
-                <RadioButton.Android value={CategoryType[CategoryType.Income]} />
+                <RadioButton.Android testID={"income-btn"} value={CategoryType[CategoryType.Income]} />
               </View>
               <View>
                 <Text>Other</Text>
-                <RadioButton.Android value={CategoryType[CategoryType.Other]} />
+                <RadioButton.Android testID={"other-btn"} value={CategoryType[CategoryType.Other]} />
               </View>
               <View>
                 <Text>Ignore</Text>
-                <RadioButton.Android value={CategoryType[CategoryType.Ignore]} />
+                <RadioButton.Android testID={"ignore-btn"} value={CategoryType[CategoryType.Ignore]} />
               </View>
             </RadioButton.Group>
             <Button mode="contained" onPress={() => { setUncatItem(); }}>Submit</Button>
@@ -162,7 +162,7 @@ export const UncategorizedItemsPage: React.FC = () => {
               </DataTable.Header>
               {uncategorizedItems.map((row, index) => {
                 return (
-                  <DataTable.Row key={index}>
+                  <DataTable.Row key={index} accessible={false}>
                     <DataTable.Cell textStyle={styles.dataText}>
                       {row.date}
                     </DataTable.Cell>
@@ -172,10 +172,12 @@ export const UncategorizedItemsPage: React.FC = () => {
                     <DataTable.Cell textStyle={styles.dataText}>
                       {row.amount}
                     </DataTable.Cell>
-                    <View style={styles.dataText}>
+                    <View style={styles.dataText} accessible={false}>
                       <Button
                         mode="text"
+                        testID={"modal-btn-" + index}
                         icon="ballot"
+                        accessible={true}
                         onPress={() => openModal(index)}>
                         {' '}
                       </Button>
